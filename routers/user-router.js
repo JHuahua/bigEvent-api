@@ -55,4 +55,25 @@ router.post('/updatepwd', async (req, res) => {
     }
 })
 
+
+// 更换头像接口
+router.post('/update/avatar', async (req, res) => {
+    // 1.获取信息
+    let id = req.user.id
+    let params = req.body
+    // 2.更新数据库
+    let sql = 'update myuser set user_pic = ? where id = ?'
+    let ret = await db.operateDb(sql, [params.avatar, id])
+    // 3.根据更新结果返回数据
+    if (ret && ret.affectedRows > 0) {
+        res.json({
+            status: 0,
+            message: '更换头像成功'
+        })
+    } else ({
+        status: 1,
+        message: '更换头像失败'
+    })
+})
+
 module.exports = router
