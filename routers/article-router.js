@@ -72,5 +72,25 @@ router.get('/article/deletecate/:id', async (req, res) => {
 })
 
 
-// 
+// 更新文章分类接口
+router.post('/article/updatecate', async (req, res) => {
+    // 1.获取数据
+    let params = req.body
+    // 2.更新数据库数据
+    let sql = 'update myarticle set name = ?, alias = ? where id = ?'
+    let ret = await db.operateDb(sql, [params.name, params.alias, params.id])
+    // 3.根据更新数据返回结果
+    if (ret && ret.affectedRows > 0) {
+        res.json({
+            status: 0,
+            message: '更新分类信息成功'
+        })
+    } else {
+        res.json({
+            status: 1,
+            message: '更新分类信息失败'
+        })
+    }
+})
+
 module.exports = router
