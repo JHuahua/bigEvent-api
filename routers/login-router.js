@@ -4,6 +4,7 @@
 const express = require('express')
 const utility = require('utility')
 const path = require('path')
+const jwt = require('jsonwebtoken')
 // 导入数据库通用模块
 const db = require(path.join(__dirname, '../common.js'))
 // 拆分路由模块，可以将路由添加到router对象上
@@ -45,6 +46,31 @@ router.post('/reguser', async (req, res) => {
     }
 })
 
+
+// 登录接口
+router.post('/login', async (req, res) => {
+    // 1.获取表单数据
+    let params = req.body
+    // 把密码进行加密才能和数据库中密码进行比对
+    params.password = utility.md5(params.password)
+    // 2.拿到数据到数据库中验证
+    let sql = 'select id from myuser where username = ? and password = ?'
+    let ret = await db.operateDb(sql, [params.username, params.password])
+    // 3.根据判断结果进行返回
+    if (ret && ret.length > 0) {
+        let token = jwt.sign({id: ret[0].id, username: params.username}, 'bigevent', {expiresIn: '2 days'})
+        res.json({
+            status: 0,
+            message: '登录成功',
+            token: 'Bearer ' + token
+        })
+    } else {
+        res.json({
+            status: 1,
+            message: '用户名或密码错误'
+        })
+    }
+})
 
 /* router.get('/test', async (req, res) => {
     let sql = 'select * from message'
