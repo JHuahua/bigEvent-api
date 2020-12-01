@@ -19,8 +19,8 @@ app.listen(8888, () => {
     console.log('running...');
 })
 
-app.get('/data', (req, res) => {
-    res.send('hello')
-})
+// app.get('/data', (req, res) => {
+//     res.send('hello')
+// })
 
 app.use('/api', loginRouter)
